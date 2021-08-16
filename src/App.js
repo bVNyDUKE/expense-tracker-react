@@ -46,15 +46,16 @@ const Balance = ({ trans }) => {
     }, [trans])
 
     const expense = useMemo(() => {
-        return trans.reduce((x, y) => {
+        let sum = trans.reduce((x, y) => {
             if (Number(y.amount) < 0) {
                 return x + y.amount
             } else return x
         }, 0)
+        return -1 * sum
     }, [trans])
 
     return (
-        <Fragment>
+        <>
             <h4>Your balance</h4>
             <h1 id="balance">${total}</h1>
 
@@ -62,7 +63,7 @@ const Balance = ({ trans }) => {
                 <div>
                     <h4>Income</h4>
                     <p id="money-plus" className="money plus">
-                        +${income}
+                        ${income}
                     </p>
                 </div>
                 <div>
@@ -72,15 +73,14 @@ const Balance = ({ trans }) => {
                     </p>
                 </div>
             </div>
-        </Fragment>
+        </>
     )
 }
 
 const History = ({ trans, setTrans }) => {
-
-    function deleteItem(id){
-        setTrans( oldList => oldList.filter(x => x.id !== id))
-    }   
+    function deleteItem(id) {
+        setTrans((oldList) => oldList.filter((x) => x.id !== id))
+    }
 
     return (
         <Fragment>
@@ -88,7 +88,13 @@ const History = ({ trans, setTrans }) => {
             <ul id="list" className="list">
                 {trans.map((x) => (
                     <li className={x.amount > 0 ? "plus" : "minus"} key={x.id}>
-                        {x.text} <span> {x.amount}</span><button className="delete-btn" onClick={() => deleteItem(x.id)}>x</button>
+                        {x.text} <span> {x.amount}</span>
+                        <button
+                            className="delete-btn"
+                            onClick={() => deleteItem(x.id)}
+                        >
+                            x
+                        </button>
                     </li>
                 ))}
             </ul>
@@ -97,30 +103,35 @@ const History = ({ trans, setTrans }) => {
 }
 
 const AddForm = ({ setTrans }) => {
-    const [text, setText] = useState('')
-    const [amount, setAmount] = useState('')
+    const [text, setText] = useState("")
+    const [amount, setAmount] = useState("")
 
-    function onSubmit(e){
+    function onSubmit(e) {
         e.preventDefault()
         const newItem = {
             id: new Date(),
             text: text,
-            amount: Number(amount)
+            amount: Number(amount),
         }
-        setTrans( oldList => {
+        setTrans((oldList) => {
             const newList = [...oldList, newItem]
             return newList
         })
-
     }
 
     return (
         <Fragment>
             <h3>Add new transaction</h3>
-            <form id="form" >
+            <form id="form">
                 <div className="form-control">
                     <label>Text</label>
-                    <input type="text" id="text" value={text} onChange={e => setText(e.target.value)} placeholder="Enter text..." />
+                    <input
+                        type="text"
+                        id="text"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="Enter text..."
+                    />
                 </div>
                 <div className="form-control">
                     <label>
@@ -131,11 +142,13 @@ const AddForm = ({ setTrans }) => {
                         type="number"
                         id="amount"
                         value={amount}
-                        onChange={e => setAmount(e.target.value)}
+                        onChange={(e) => setAmount(e.target.value)}
                         placeholder="Enter amount..."
                     />
                 </div>
-                <button className="btn" onClick={onSubmit}>Add transaction</button>
+                <button className="btn" onClick={onSubmit}>
+                    Add transaction
+                </button>
             </form>
         </Fragment>
     )
